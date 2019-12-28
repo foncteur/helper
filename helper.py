@@ -4,8 +4,6 @@
 ##########
 
 # The purpose of this script is to help with organizations and to-do lists.
-# It also allows to track habits.
-
 
 # Import modules
 import sys
