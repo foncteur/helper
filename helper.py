@@ -92,23 +92,44 @@ def add(name, cat, list_elts):
 
 # How to append an element elt to a list l
 def append(list_name, elt):
-    # TODO : return an error if the list was not found
-    # TODO (feature) : be able to choose where we add the element
+    # TODO (feature) : be able to choose where we add the element -> relevant ?
     data = read_lists()
+    test = False
     for line in data:
         if line[0] == list_name:
             line[2].append(elt)
+            test = True
+    if (not test):
+        print("Error: list not found")
+        return 1
     rewrites_all(data)
     return 0
 
 # How to delete a list l
 def delete(list_name):
-    # TODO: return an error if the list wasn't found
+    data = read_lists()
+    data_temp = []
+    test = False
+    for line in data:
+        if line[0] != list_name:
+            data_temp.append(line)
+            test = True
+    if (not test):
+        print("Error: list not found")
+        return 1
+    rewrites_all(data_temp)
+    return 0
+
+def remove_elt(list_name, elt):
     data = read_lists()
     data_temp = []
     for line in data:
         if line[0] != list_name:
             data_temp.append(line)
+        else:
+            line_temp = line
+            line_temp[2].remove(elt)
+            data_temp.append(line_temp)
     rewrites_all(data_temp)
     return 0
 
@@ -123,9 +144,9 @@ def view_cat(cat_name):
     if len(L) == 0:
         print("Error: there is no list in this category")
         return 1
-    # TODO: prettyprinting 
-    for liste in L:
-        print_list(liste)
+    print("\x1b[31m\x1b[1m{}:\x1b[0m".format("List of lists:"))
+    for item in L:
+        print("- {}".format(item[0]))
     return 0
 
 # How to view all categories
@@ -135,8 +156,9 @@ def view_cat_names():
     for line in data:
         L.append(line[1])
     L = sorted(set(L))
-    # TODO: prettyprinting for L
-    print(L)
+    print("\x1b[31m\x1b[1m{}:\x1b[0m".format("Categories"))
+    for item in L:
+        print("- {}".format(item))
     return 0
 
 
@@ -149,11 +171,21 @@ def view_all():
 
 # Main function
 
+def welcome():
+    print("Welcome!")
+    print("\x1b[31m\x1b[1m{}:\x1b[0m".format("To view a list"), "view name_of_list")
+    print("\x1b[31m\x1b[1m{}:\x1b[0m".format("To create a list"), "add name_of_list category_of_list elt1 el2 etc")
+    print("\x1b[31m\x1b[1m{}:\x1b[0m".format("To append an element to a list"), "append name_of_list name_of_element")
+    print("\x1b[31m\x1b[1m{}:\x1b[0m".format("To delete an element from a list"), "done name_of_list name_of_element")
+    print("\x1b[31m\x1b[1m{}:\x1b[0m".format("To delete a list"), "delete name_of_list")
+    print("\x1b[31m\x1b[1m{}:\x1b[0m".format("To view the lists in a category"), "view_category name_of_category")
+    print("\x1b[31m\x1b[1m{}:\x1b[0m".format("To view the list of the categories"), "view_categories")
+    print("\x1b[31m\x1b[1m{}:\x1b[0m".format("To view the list of all the lists"), "view_everything")
+
 def main():
-    # TODO: manual/welcome message
     if len(sys.argv) <= 1:
-        print("Error: need command")
-        return 1
+        welcome()
+        return 0
     elif sys.argv[1] == "view":
         if len(sys.argv) <= 2 :
             print("Error: you need to specify which list to view")
@@ -181,6 +213,15 @@ def main():
             return 1
         else:
             return append(sys.argv[2], sys.argv[3])
+    elif sys.argv[1] == "done":
+        if len(sys.argv) <= 2:
+            print("Error: you need to specify the name of the list")
+            return 1
+        elif len(sys.argv) <= 3:
+            print("Error: you need to specify the element you want to delete")
+            return 1
+        else:
+            return (remove_elt(sys.argv[2], sys.argv[3]))
     elif sys.argv[1] == "delete":
         if len(sys.argv) <=2:
             print("Error: you need to specify the name of the list you want to delete")
@@ -199,6 +240,7 @@ def main():
         return (view_all())
     else:
         print("Error: unknown command")
+        welcome()
         return 1
 
 sys.exit(main())
