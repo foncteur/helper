@@ -1,4 +1,4 @@
-# Helper
+# helper
 
 ## What is it?
 The purpose of this script is to help me to organize my life, deal with my autism, adhd, etc.
